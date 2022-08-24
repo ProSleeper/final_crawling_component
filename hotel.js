@@ -1,7 +1,9 @@
 // puppeteer을 가져온다.
 const puppeteer = require("puppeteer");
+
 // cheerio를 가져온다.
 const cheerio = require("cheerio");
+
 
 const MAIN_URL = "https://www.yanolja.com";
 
@@ -10,7 +12,7 @@ const MAIN_URL = "https://www.yanolja.com";
   // 옵션으로 headless모드를 끌 수 있다.
   // const browser = await puppeteer.launch();
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
   });
   // 새로운 창을 연다.
   const page = await browser.newPage();
