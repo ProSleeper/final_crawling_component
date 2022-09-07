@@ -3,8 +3,6 @@ const puppeteer = require("puppeteer");
 
 // cheerio를 가져온다.
 const cheerio = require("cheerio");
-
-
 const MAIN_URL = "https://www.yanolja.com";
 
 (async () => {
@@ -12,21 +10,23 @@ const MAIN_URL = "https://www.yanolja.com";
   // 옵션으로 headless모드를 끌 수 있다.
   // const browser = await puppeteer.launch();
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
   });
   // 새로운 창을 연다.
+
   const page = await browser.newPage();
   await page.setViewport({
     width: 1920,
     height: 1080,
   });
+
   // 창의 크기를 설정한다.
   const $ = await loadCheerio(page, MAIN_URL);
-
   const shortCuts_addr = main_shortCut($);
+  console.log(shortCuts_addr);
   const d1_Recommended_Motel = await d1_Region_Select(page, shortCuts_addr[0]);
 
-  //console.log(shortCuts_addr);
+  console.log("이거지?" + d1_Recommended_Motel);
   // 브라우저를 종료한다.
   //browser.close();
 })();
@@ -65,14 +65,16 @@ function main_shortCut($) {
  */
 async function d1_Region_Select(page, url) {
   const $ = await loadCheerio(page, url);
-  let index = 1;
-  let testInterval = setInterval(() => {
-    page.click(".SubhomeRegionList_region1Depth__s6mmY > li:nth-child(" + index + ") > a");
-    index++;
-    if (index > 3) {
-      clearInterval(testInterval);
-    }
-  }, 3000);
+
+  //요 아래에서 에러 나네
+
+  await page.waitForSelector(".SubhomeRegionList_region1Depth__s6mmY > li:nth-child(1) > a"); //해당 요소가 로딩될때까지 기다려주는 코드
+
+  for (let index = 1; index < 7; index++) {
+    () => {
+      page.click(".SubhomeRegionList_region1Depth__s6mmY > li:nth-child(" + index + ") > a");
+    };
+  }
 
   // /** 모든 배열을 순환한다. */
   // console.log(recommend.length);
