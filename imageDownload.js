@@ -1,9 +1,8 @@
 const puppeteer = require("puppeteer");
+const fetch = require("node-fetch");
 const fs = require("fs");
-const path = require("path");
-const { ServerResponse } = require("http");
 
-const DEFAULT_URL = "https://place-site.yanolja.com/places/3006283";
+const TEST_URL = "https://place-site.yanolja.com/places/3006283";
 /** 
 
 https://place-site.yanolja.com/places/25986
@@ -18,8 +17,7 @@ async function startCrawl() {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
-  await page.goto(DEFAULT_URL);
-
+  await page.goto(TEST_URL);
   //숙소 크롤링 시작
   accoCrawl(page);
 }
@@ -57,33 +55,70 @@ async function readyDownload(page) {
 async function startDownloadPicture(page) {
   //const elements = await page.$x("/html/body/div[1]/div/div/main/article/div[1]/section/div[1]/div/div[3]");
   const temp = await page.waitForSelector("#__next > div > div > main > article > div:nth-child(1) > section > div.carousel-root > div > div.css-ln49wb");
-  // console.log(temp);
 
-  for (let index = 0; index < 5; index++) {
+  const pictureCount = await countPicture(page);
+  for (let index = 0; index < 3; index++) {
     await page.waitForTimeout(1000);
     await temp.click();
     await savePicture(page, index);
   }
 }
 
-//뭔가 다운이 되기는 하는데 이건 그냥 된다 느낌으로 행복감만 충족하자
-//다른 구현으로 만들자. 내가 조종할 수 있는 코드로
 async function savePicture(page, index) {
-  await page.$x("//*[@id='" + index + "']/div/span/img");
-  // const src = await target.getProperty("src");
-  // const image = await src.jsonValue();
-  page.on("response", async (response) => {
-    const url = response.url();
-    console.log(url);
-    if (response.request().resourceType() === "image") {
-      response.buffer().then((file) => {
-        const fileName = url.split("/").pop();
-        const filePath = path.resolve("/image/", fileName);
-        const writeStream = fs.createWriteStream(filePath);
-        writeStream.write(file);
-      });
-    }
-  });
+  const [target] = await page.$x("//*[@id='" + index + "']/div/span/img");
+  const src = await target.getProperty("src");
+  const image = await src.jsonValue();
+
+  const data = await download(image, `C:\\image\\image${index}.jpg`);
+  //console.log(data); // The file is finished downloading.
+}
+
+//NodeJS에서 이미지 URL로 다운받기
+async function download(url, dest) {
+  const fetchResponse = await fetch(url);
+  const myBlob = await fetchResponse.blob();
+  const myArrayBuffer = await myBlob.arrayBuffer();
+  const myImageArray = Buffer.from(myArrayBuffer);
+
+  fs.appendFile(dest, myImageArray, () => {});
+}
+
+async function countPicture(page) {
+  const result = await page.$("#__next > div > div > main > article > div:nth-child(1) > section > div.css-3yjbuh > figcaption > figcaption > p.css-0");
+  const value = await page.evaluate((el) => el.textContent, result);
+
+  const regex = /\d/gi;
+
+  const imageCount = value.match(regex).join().replaceAll(",", "");
+  return Number(imageCount);
+  //console.log(startEval);
 }
 
 startCrawl();
+
+/**
+ * 숙소에서 크롤링할 데이터
+ *
+ * 숙소명
+ * 평점
+ * 평점인원
+ * 인기시설 및 서비스(편의시설)
+ * 전화번호
+ * 주소
+ * 최저가격
+ * 이미지
+ */
+
+/**
+ * 객실에서 크롤링할 데이터
+ *
+ * 객실명
+ * 기본정보(인원수, 금연 등)
+ * 기준인원
+ * 최대인원
+ * 숙박 시작일
+ * 숙박 종료일
+ * 가격
+ * 이미지
+ *
+ */
