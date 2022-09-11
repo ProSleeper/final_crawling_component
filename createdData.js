@@ -4,14 +4,15 @@
 //이 함수의 내용이 약간 길지만 크게 3개로 나눠진다.
 //1. 데이터부분 2. 랜덤데이터 추출해서 저장 3. 파일로 출력
 function initDraw() {
-  var fs = require("fs");
-  let data = {};
-  data.items = [];
-
-  fs.appendFile("data.json", JSON.stringify(data), function (err) {
-    if (err) throw err;
+  console.log(99 % 100000);
+  setTimeout(() => {
     console.log("complete");
-  });
+  }, 3000);
+  for (let index = 0; index < 10000000000; index++) {
+    if (index % 100000000 == 0) {
+      console.log("반복" + index);
+    }
+  }
 }
 
 initDraw();

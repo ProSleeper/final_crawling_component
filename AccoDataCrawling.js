@@ -1,22 +1,41 @@
 const puppeteer = require("puppeteer");
 const fetch = require("node-fetch");
 const fs = require("fs");
-const bi = require("./basicInfo");
+const abi = require("./AccoBasicInfo");
+const rbi = require("./RoomBasicInfo");
 
-const TEST_URL = "https://place-site.yanolja.com/places/3012800";
+const ACCO_URL = [
+  // "https://place-site.yanolja.com/places/10041549",
+  // "https://place-site.yanolja.com/places/3008029",
+  // "https://place-site.yanolja.com/places/10041549",
+  // "https://place-site.yanolja.com/places/3002358",
+  // "https://place-site.yanolja.com/places/3012800",
+  // "https://place-site.yanolja.com/places/3016420",
+  // "https://place-site.yanolja.com/places/25986",
+  // "https://place-site.yanolja.com/places/3006283",
+  // "https://place-site.yanolja.com/places/1007912",
+  // "https://place-site.yanolja.com/places/1000099554",
+
+  "https://place-site.yanolja.com/places/3007345",
+  "https://place-site.yanolja.com/places/10040403",
+  "https://place-site.yanolja.com/places/3001028",
+  "https://place-site.yanolja.com/places/3013821",
+  "https://place-site.yanolja.com/places/3004350",
+  "https://place-site.yanolja.com/places/1000103175",
+  "https://place-site.yanolja.com/places/10046272",
+  "https://place-site.yanolja.com/places/10046312",
+];
+
+const TEST_URL = "https://place-site.yanolja.com/places/10041549";
+
 /** 
-https://place-site.yanolja.com/places/3012800
-https://place-site.yanolja.com/places/3016420
-https://place-site.yanolja.com/places/25986
-https://place-site.yanolja.com/places/3006283
-https://place-site.yanolja.com/places/1007912
-https://place-site.yanolja.com/places/1000099554
+
 
 뒤에 숫자만 바꾸면 된다. 근데 숫자의 기준을 모르겠다 뭐가 지역인지 아니면 숙소의 종류인지
 */
 
 class Accomodation {
-  constructor(title, rating, facility, lowPrice, basicInfo) {
+  constructor(title, rating, facility, lowPrice, basicInfo, url) {
     this.title = title;
     this.rating = rating[0];
     this.ratingCount = rating[1];
@@ -24,41 +43,43 @@ class Accomodation {
     this.lowPrice = lowPrice;
     this.tel = basicInfo[0];
     this.address = basicInfo[1];
+    this.url = url;
   }
 }
 
-async function startCrawl() {
-  const browser = await puppeteer.launch({ headless: false });
+async function startCrawl(url) {
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
-  await page.goto(TEST_URL);
 
+  await page.goto(url);
   await readyDownload(page); //로딩
 
-  const title = await bi.crawlTitle(page); //숙소명
+  //객실 크롤링start
+  const title = await abi.crawlTitle(page); //숙소명
+  const arrUrl = await abi.crawlRoomUrl(page); //객실 Url
+  for await (const roomUrl of arrUrl) {
+    await rbi.roomConnect(browser, `https://place-site.yanolja.com${roomUrl}`, title);
+  }
+  //객실 크롤링end
+  console.log("룸 끝");
+
+  //숙소 크롤링start
   await startDownloadPicture(page, title); //숙소 이미지 다운
-  const rating = await bi.crawlRating(page); //평점, 평점준 인원
-  const fac = await bi.crawlFacility(page); //시설종류
-  const lowPrice = await bi.crawlLowPrice(page); //최저가격
-  const basicInfo = await bi.crawlSellerInfo(page); //전화번호, 주소
+  const rating = await abi.crawlRating(page); //평점, 평점준 인원
+  const fac = await abi.crawlFacility(page); //시설종류
+  const lowPrice = await abi.crawlLowPrice(page); //최저가격
+  const basicInfo = await abi.crawlSellerInfo(page); //전화번호, 주소
+  //위치, 교통, 숙소정책 크롤링
 
-  // console.log(title);
-  // console.log(rating);
-  // console.log(fac);
-  // console.log(lowPrice);
-  // console.log(basicInfo);
-
-  const accoData = new Accomodation(title, rating, fac, lowPrice, basicInfo);
-  console.log(accoData);
-
-  fs.writeFile(`${__dirname}\\lowData\\${title}\\data.json`, JSON.stringify(accoData), () => {});
-
-  //await readyDownload(page);
-
-  //숙소 크롤링 시작
+  const accoData = new Accomodation(title, rating, fac, lowPrice, basicInfo, url); //객체 생성
+  fs.writeFile(`${__dirname}\\lowData\\${title}\\data.json`, JSON.stringify(accoData), () => {}); //json 파일 저장
+  //숙소 크롤링end
+  console.log("숙소 크롤링 끝");
+  browser.close();
 }
-
 async function readyDownload(page) {
+  //await page.waitForNavigation();
   const templa = await page.waitForSelector("#BOTTOM_SHEET > div.css-qu3ao > div > div.right.css-oq3qu5"); //해당 요소가 로딩될때까지 기다려주는 코드
 
   try {
@@ -72,6 +93,10 @@ async function readyDownload(page) {
     await templa.click();
     await templa.click();
     await templa.click();
+    await templa.click();
+    templa.click();
+    templa.click();
+    templa.click();
   } catch (error) {
     //console.error(error);
   }
@@ -82,8 +107,8 @@ async function startDownloadPicture(page, title) {
   const temp = await page.waitForSelector("#__next > div > div > main > article > div:nth-child(1) > section > div.carousel-root > div > div.css-ln49wb");
 
   const pictureCount = await countPicture(page);
-  for (let index = 0; index < 3; index++) {
-    await page.waitForTimeout(1000);
+  for (let index = 0; index < pictureCount; index++) {
+    await page.waitForTimeout(200);
     await temp.click();
     await savePicture(page, index, title);
   }
@@ -94,7 +119,7 @@ async function savePicture(page, index, title) {
   const src = await target.getProperty("src");
   const image = await src.jsonValue();
   const makeFolder = (dir) => {
-    console.log(dir);
+    //console.log(dir);
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
@@ -125,10 +150,11 @@ async function countPicture(page) {
   return Number(imageCount);
   //console.log(startEval);
 }
-
-startCrawl();
-
-
+(async () => {
+  for await (const url of ACCO_URL) {
+    await startCrawl(url);
+  }
+})();
 
 /**
  * 숙소에서 크롤링할 데이터
@@ -150,25 +176,9 @@ startCrawl();
  * 기본정보(인원수, 금연 등)
  * 기준인원
  * 최대인원
- * 체크인
- * 체크아웃
+ * 숙박 시작일
+ * 숙박 종료일
  * 가격
  * 이미지
  *
- */
-/**
- * 숙소 객실,후기 외에
-위치/교통이나 숙소정책
-지금안하더라도 나중에 할 계획인거면
-미리 데이터 받아놓는게 좋을 것 같아
-
-모텔도 대실 나중에 넣을거면
-그 금액도 마찬가지로 넣어야 할 듯 ㅎㅎ;
-
-근데 이 부분은 숙소 구현할 사람이 봐야할 것 같은데
-
-모텔, 호텔별, 그리고 숙소별 보여지는게 조금씩 달라서
-숙소 파트 담당하는 사람이 어디까지 만들건지(1,2차 포함) 정해서 말해주세요~
- * 
- * 
  */

@@ -10,3 +10,5 @@ const fs = require("fs");
 
   fs.appendFile("C:\\image\\asdfaasdff.jpg", myImageArray, () => {});
 })();
+
+
