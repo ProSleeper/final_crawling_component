@@ -29,8 +29,6 @@ const ACCO_URL = [
 const TEST_URL = "https://place-site.yanolja.com/places/10041549";
 
 /** 
-
-
 뒤에 숫자만 바꾸면 된다. 근데 숫자의 기준을 모르겠다 뭐가 지역인지 아니면 숙소의 종류인지
 */
 
@@ -48,35 +46,42 @@ class Accomodation {
 }
 
 async function startCrawl(url) {
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 1920, height: 1080 });
+  try {
+    const browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1920, height: 1080 });
 
-  await page.goto(url);
-  await readyDownload(page); //로딩
+    await page.goto(url);
+    await readyDownload(page); //로딩
 
-  //객실 크롤링start
-  const title = await abi.crawlTitle(page); //숙소명
-  const arrUrl = await abi.crawlRoomUrl(page); //객실 Url
-  for await (const roomUrl of arrUrl) {
-    await rbi.roomConnect(browser, `https://place-site.yanolja.com${roomUrl}`, title);
+    console.log("룸 시작");
+    //객실 크롤링start
+    const title = await abi.crawlTitle(page); //숙소명
+    console.log("숙소명: " + title);
+    const arrUrl = await abi.crawlRoomUrl(page); //객실 Url
+    for await (const roomUrl of arrUrl) {
+      await rbi.roomConnect(browser, `https://place-site.yanolja.com${roomUrl}`, title);
+    }
+    //객실 크롤링end
+    console.log("룸 끝");
+
+    console.log("숙소 시작");
+    //숙소 크롤링start
+    await startDownloadPicture(page, title); //숙소 이미지 다운
+    const rating = await abi.crawlRating(page); //평점, 평점준 인원
+    const fac = await abi.crawlFacility(page); //시설종류
+    const lowPrice = await abi.crawlLowPrice(page); //최저가격
+    const basicInfo = await abi.crawlSellerInfo(page); //전화번호, 주소
+    //위치, 교통, 숙소정책 크롤링
+
+    const accoData = new Accomodation(title, rating, fac, lowPrice, basicInfo, url); //객체 생성
+    fs.writeFile(`${__dirname}\\lowData\\${title}\\data.json`, JSON.stringify(accoData), () => {}); //json 파일 저장
+    //숙소 크롤링end
+    console.log("숙소 크롤링 끝");
+    browser.close();
+  } catch (error) {
+    console.error(error);
   }
-  //객실 크롤링end
-  console.log("룸 끝");
-
-  //숙소 크롤링start
-  await startDownloadPicture(page, title); //숙소 이미지 다운
-  const rating = await abi.crawlRating(page); //평점, 평점준 인원
-  const fac = await abi.crawlFacility(page); //시설종류
-  const lowPrice = await abi.crawlLowPrice(page); //최저가격
-  const basicInfo = await abi.crawlSellerInfo(page); //전화번호, 주소
-  //위치, 교통, 숙소정책 크롤링
-
-  const accoData = new Accomodation(title, rating, fac, lowPrice, basicInfo, url); //객체 생성
-  fs.writeFile(`${__dirname}\\lowData\\${title}\\data.json`, JSON.stringify(accoData), () => {}); //json 파일 저장
-  //숙소 크롤링end
-  console.log("숙소 크롤링 끝");
-  browser.close();
 }
 async function readyDownload(page) {
   //await page.waitForNavigation();
@@ -88,15 +93,17 @@ async function readyDownload(page) {
     //어떤 event(보통 클릭)으로 애니메이션이나 트랜지션이 발생했다면 그걸 끝나고 다음 클릭을 해야하는데
     //정확히 그렇게 구현하는 방법을 모르겠다.
     //await는 결국 비동기를 동기적으로 만들어주긴 하지만 그게 크롤링할때 애니메이션까지 보장해주지는 못한다.
-    await templa.click();
-    await templa.click();
-    await templa.click();
-    await templa.click();
-    await templa.click();
-    await templa.click();
-    templa.click();
-    templa.click();
-    templa.click();
+    // await templa.click();
+    // await templa.click();
+    // await templa.click();
+    // await templa.click();
+    // await templa.click();
+    // await templa.click();
+    // templa.click();
+    // templa.click();
+    // templa.click();
+
+    await templa.evaluate((b) => b.click());
   } catch (error) {
     //console.error(error);
   }
@@ -109,7 +116,7 @@ async function startDownloadPicture(page, title) {
   const pictureCount = await countPicture(page);
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
-    await temp.click();
+    await temp.evaluate((b) => b.click());
     await savePicture(page, index, title);
   }
 }
@@ -152,7 +159,11 @@ async function countPicture(page) {
 }
 (async () => {
   for await (const url of ACCO_URL) {
-    await startCrawl(url);
+    try {
+      await startCrawl(url);
+    } catch (error) {
+      console.error(error);
+    }
   }
 })();
 

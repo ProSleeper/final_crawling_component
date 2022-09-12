@@ -8,8 +8,8 @@ module.exports = {
     //const elements = await page.$x("/html/body/div[1]/div/div/main/article/div[1]/section/div[1]/div/div[3]");
     const result = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt");
 
-    const title = await page.evaluate((el) => el.textContent, result);
-    //console.log(title);
+    let title = await page.evaluate((el) => el.textContent, result);
+    title = title.replaceAll(/[\/\:\*\?\"\<\>\|]/gi, "");
     return title;
   },
   crawlRating: async (page) => {
@@ -17,8 +17,15 @@ module.exports = {
     const rating = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-189aa3t");
     const ratingCount = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-15gzbke");
 
-    const strRating = await page.evaluate((el) => el.textContent, rating);
-    const strRatingCount = await page.evaluate((el) => el.textContent, ratingCount);
+    let strRating = "평점 없음";
+    let strRatingCount = "평점 없음";
+    try {
+      strRating = await page.evaluate((el) => el.textContent, rating);
+      strRatingCount = await page.evaluate((el) => el.textContent, ratingCount);
+    } catch (error) {
+      console.error(error);
+    }
+
     //console.log(value);
     return [strRating.toNumber(), strRatingCount.toNumber()];
   },
@@ -37,10 +44,11 @@ module.exports = {
   crawlSellerInfo: async (page) => {
     //const elements = await page.$x("/html/body/div[1]/div/div/main/article/div[1]/section/div[1]/div/div[3]");
     const result = await page.waitForSelector("#__next > div > div > main > article > div:nth-child(3) > div > div > div.css-1830rfa");
-    await result.click();
-    await result.click();
-    await result.click();
-    await result.click();
+    // await result.click();
+    // await result.click();
+    // await result.click();
+    // await result.click();
+    await result.evaluate((b) => b.click());
 
     const address = await page.$("#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(3) > div:nth-child(2) > div");
     const tel = await page.$("#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(5) > div:nth-child(2) > div");

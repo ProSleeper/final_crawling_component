@@ -32,6 +32,7 @@ module.exports = {
     await page.goto(roomUrl);
     //await page.waitForNavigation("load");
     const roomTitle = await crawlRoomTitle(page, accoTitle);
+    console.log("객실명: " + roomTitle);
     const roomInfo = await crawlRoomInfo(page);
     const roomRules = await crawlRoomRules(page);
     const roomPrice = await crawlLowPrice(page);
@@ -86,7 +87,7 @@ const crawlRoomTitle = async (page, accoTitle) => {
   const result = await page.$("#__next > div > div > main > article > section:nth-child(2) > article.css-zddhdk > div.css-cwsr4f > div.css-x62baa");
 
   let title = await page.evaluate((el) => el.textContent, result);
-  title = title.replaceAll(/\\\/\:\*\?\"\<\>\|/gi, "");
+  title = title.replaceAll(/[\/\:\*\?\"\<\>\|]/gi, "");
   const makeFolderDupl = (dir) => {
     //console.log(dir);
     if (!fs.existsSync(dir)) {
@@ -112,7 +113,8 @@ async function startDownloadPicture(page, accoTitle, roomTitle) {
   //console.log(pictureCount);
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
-    await picture.click();
+    //await picture.click();
+    await picture.evaluate((b) => b.click());
     await savePicture(page, index, accoTitle, roomTitle);
   }
 }
