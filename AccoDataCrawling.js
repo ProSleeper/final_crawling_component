@@ -5,17 +5,16 @@ const abi = require("./AccoBasicInfo");
 const rbi = require("./RoomBasicInfo");
 
 const ACCO_URL = [
-  // "https://place-site.yanolja.com/places/10041549",
-  // "https://place-site.yanolja.com/places/3008029",
-  // "https://place-site.yanolja.com/places/10041549",
-  // "https://place-site.yanolja.com/places/3002358",
-  // "https://place-site.yanolja.com/places/3012800",
-  // "https://place-site.yanolja.com/places/3016420",
-  // "https://place-site.yanolja.com/places/25986",
-  // "https://place-site.yanolja.com/places/3006283",
-  // "https://place-site.yanolja.com/places/1007912",
-  // "https://place-site.yanolja.com/places/1000099554",
-
+  "https://place-site.yanolja.com/places/10041549",
+  "https://place-site.yanolja.com/places/3008029",
+  "https://place-site.yanolja.com/places/10041549",
+  "https://place-site.yanolja.com/places/3002358",
+  "https://place-site.yanolja.com/places/3012800",
+  "https://place-site.yanolja.com/places/3016420",
+  "https://place-site.yanolja.com/places/25986",
+  "https://place-site.yanolja.com/places/3006283",
+  "https://place-site.yanolja.com/places/1007912",
+  "https://place-site.yanolja.com/places/1000099554",
   "https://place-site.yanolja.com/places/3007345",
   "https://place-site.yanolja.com/places/10040403",
   "https://place-site.yanolja.com/places/3001028",
@@ -78,6 +77,7 @@ async function startCrawl(url) {
     fs.writeFile(`${__dirname}\\lowData\\${title}\\data.json`, JSON.stringify(accoData), () => {}); //json 파일 저장
     //숙소 크롤링end
     console.log("숙소 크롤링 끝");
+    
     browser.close();
   } catch (error) {
     console.error(error);
@@ -87,7 +87,11 @@ async function readyDownload(page) {
   //await page.waitForNavigation();
   const templa = await page.waitForSelector("#BOTTOM_SHEET > div.css-qu3ao > div > div.right.css-oq3qu5"); //해당 요소가 로딩될때까지 기다려주는 코드
 
-  try {
+  //try 주석처리 함. startCrawl을 실행하는 곳에서 모든 에러 처리를 하는데
+  //이러면 일정한 곳에서 에러처리가 되는 장점이 있지만, 에러가 발생하는 곳에서 처리를 하고 그 후의 코드를 실행해야 하는데
+  //그러지 못하고 빠져나오게 됨. 
+  //
+  //try {
     //원래는 3번만 클릭하면 되는데 이렇게 한 이유는
     //puppeteer에서 지원하는데 내가 구현을 못하는 건지 모르겠는데
     //어떤 event(보통 클릭)으로 애니메이션이나 트랜지션이 발생했다면 그걸 끝나고 다음 클릭을 해야하는데
@@ -104,9 +108,9 @@ async function readyDownload(page) {
     // templa.click();
 
     await templa.evaluate((b) => b.click());
-  } catch (error) {
+  //} catch (error) {
     //console.error(error);
-  }
+  //}
 }
 
 async function startDownloadPicture(page, title) {

@@ -106,15 +106,21 @@ const crawlRoomTitle = async (page, accoTitle) => {
   return title;
 };
 async function startDownloadPicture(page, accoTitle, roomTitle) {
-  const picture = await page.waitForSelector("#__next > div > div > main > article > section.css-1wpv5ik > div.carousel-root > div > div.css-ln49wb");
-  // console.log(temp);
-  // console.log(title);
+  
+  let picture = null;
+  try {
+    picture = await page.waitForSelector("#__next > div > div > main > article > section.css-1wpv5ik > div.carousel-root > div > div.css-ln49wb");
+  } catch (error) {
+    //console.error(error);
+  }
+  
   const pictureCount = await countPicture(page);
-  //console.log(pictureCount);
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
     //await picture.click();
-    await picture.evaluate((b) => b.click());
+    if (picture != undefined && picture != null) {
+      await picture.evaluate((b) => b.click());
+    }
     await savePicture(page, index, accoTitle, roomTitle);
   }
 }

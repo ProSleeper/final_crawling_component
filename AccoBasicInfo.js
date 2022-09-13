@@ -17,15 +17,15 @@ module.exports = {
     const rating = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-189aa3t");
     const ratingCount = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-15gzbke");
 
-    let strRating = "평점 없음";
-    let strRatingCount = "평점 없음";
+    let strRating = "-1";
+    let strRatingCount = "-1";
     try {
       strRating = await page.evaluate((el) => el.textContent, rating);
       strRatingCount = await page.evaluate((el) => el.textContent, ratingCount);
+      
     } catch (error) {
-      console.error(error);
+      //console.error("여기" + error);
     }
-
     //console.log(value);
     return [strRating.toNumber(), strRatingCount.toNumber()];
   },
