@@ -1,0 +1,15 @@
+{
+    Acco:[
+        AccoTitle:"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt",
+        AccoRating:"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-189aa3t", 
+        AccoRatingCount:"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-15gzbke",
+        Facility:"#__next > div > div > main > article > div:nth-child(1) > div.css-11sbcds > section > ul > div",
+        SellerInfo: [
+            button:"#__next > div > div > main > article > div:nth-child(3) > div > div > div.css-1830rfa",
+            address: "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(3) > div:nth-child(2) > div",
+            tel: "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(5) > div:nth-child(2) > div",
+        ],
+        LowestAndUrl:"#__next > div > div > main > article > div:nth-child(2) > div > div.css-17c0wg8 > div > div.css-1audv06 > div",
+    ]
+
+}
