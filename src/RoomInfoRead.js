@@ -15,7 +15,7 @@ module.exports = {
     console.log("객실명: " + roomTitle);
     const roomInfo = await crawlRoomInfo(page);
     const roomRules = await crawlRoomRules(page);
-    const roomPrice = await crawlLowPrice(page);
+    const roomPrice = await crawlPrice(page);
 
     const roomData = new Room(roomTitle, roomInfo, roomRules, roomPrice);
     await startDownloadPicture(page, accoTitle, roomTitle);
@@ -26,7 +26,7 @@ module.exports = {
   },
 };
 
-const crawlLowPrice = async (page) => {
+const crawlPrice = async (page) => {
   const result = await page.$$("#__next > div > div > main > article > section:nth-child(3) > ul > li > div > div.css-1tv79r0 > div > div.css-1d2dkx7 > span");
   const LowPrice = await page.evaluate((el) => el.textContent, result[0]);
   return LowPrice.replaceAll(",", "");

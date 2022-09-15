@@ -1,6 +1,6 @@
 String.prototype.toNumber = require("./utils");
 const { iconNameList, download, makeFolder, numberOfPictures, readTitle } = require("./CommonMethod");
-
+const aa = {a:1, b:2}
 module.exports = {
   crawlTitle: async (page) => {
     const titleSelector = "#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt";

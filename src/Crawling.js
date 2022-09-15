@@ -7,6 +7,8 @@ String.prototype.toNumber = require("./utils");
 const { iconNameList, download, makeFolder, numberOfPictures } = require("./CommonMethod");
 const Accomodation = require("./Accomodation");
 
+const SAVE_DIRECTORY = `${__dirname}\\lowData\\${title}\\data.json`;//현재 임시
+
 const ACCOMODATION_URL = [
   "https://place-site.yanolja.com/places/10041549",
   "https://place-site.yanolja.com/places/3008029",
@@ -44,7 +46,7 @@ async function startCrawl(url) {
     for await (const roomUrl of arrUrl) {
       await rbi.roomConnect(browser, `https://place-site.yanolja.com${roomUrl}`, title);
     }
-
+    
     console.log("룸 끝");
 
     console.log("숙소 시작");

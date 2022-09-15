@@ -1,0 +1,34 @@
+//Rating, RatingCount 두개는 마지막 부분만 달라서 나눠도 됨.
+//RoomRules 맨 뒤에 숫자만 2,4,6 3개로 변환해서 사용하면 됨
+
+{
+    "Acco":{
+        "Title":"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt",
+        "Rating":"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-189aa3t", 
+        "RatingCount":"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-15gzbke",
+        "Facility":"#__next > div > div > main > article > div:nth-child(1) > div.css-11sbcds > section > ul > div",
+        "SellerInfo": {
+            "button":"#__next > div > div > main > article > div:nth-child(3) > div > div > div.css-1830rfa",
+            "address": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(3) > div:nth-child(2) > div",
+            "tel": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(5) > div:nth-child(2) > div"
+        },
+        "LowestAndUrl":"#__next > div > div > main > article > div:nth-child(2) > div > div.css-17c0wg8 > div > div.css-1audv06 > div",
+        "ReadyDownload": "#BOTTOM_SHEET > div.css-qu3ao > div > div.right.css-oq3qu5",
+        "AccoDownloadPicture":"#__next > div > div > main > article > div:nth-child(1) > section > div.carousel-root > div > div.css-ln49wb",
+        "SavePicture": "//*[@id='${index}]/div/span/img",
+        "CountPicture": "#__next > div > div > main > article > div:nth-child(1) > section > div.css-3yjbuh > figcaption > figcaption > p.css-0",
+
+
+    },
+    "Room":{
+    "RoomPrice":"#__next > div > div > main > article > section:nth-child(3) > ul > li > div > div.css-1tv79r0 > div > div.css-1d2dkx7 > span",
+        "RoomRules":"#__next > div > div > main > article > section:nth-child(3) > ul > li:nth-child(1) > div > div.css-1xcx7se > span:nth-child(2)",
+        "RoomInfo":"#__next > div > div > main > article > section:nth-child(2) > article.css-11faxjx > ul > li",
+        "Roomtitle": "#__next > div > div > main > article > section:nth-child(2) > article.css-zddhdk > div.css-cwsr4f > div.css-x62baa",
+        "RoomDownloadPicture": "#__next > div > div > main > article > section.css-1wpv5ik > div.carousel-root > div > div.css-ln49wb",
+        "RoomCountPicture":"#__next > div > div > main > article > section.css-1wpv5ik > div.css-3yjbuh > figcaption > figcaption > p.css-0",
+        "SavePictureXpath": "//*[@id='${index}']/div/span/img"
+    }
+}
+
+
