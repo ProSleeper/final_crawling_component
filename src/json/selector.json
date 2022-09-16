@@ -1,29 +1,28 @@
 {
-    "ACCO":{
-        "TITLE":"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt",
-        "RATING":"#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span",
-        "FACILITY":"#__next > div > div > main > article > div:nth-child(1) > div.css-11sbcds > section > ul > div",
-        "SELLER_INFO": {
-            "BUTTON":"#__next > div > div > main > article > div:nth-child(3) > div > div > div.css-1830rfa",
-            "ADDRESS": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(3) > div:nth-child(2) > div",
-            "TEL": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(5) > div:nth-child(2) > div",
-            "DATA": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(${ELEMENT_NUMBER}) > div:nth-child(2) > div"
-        },
-        "LOWEST_AND_URL":"#__next > div > div > main > article > div:nth-child(2) > div > div.css-17c0wg8 > div > div.css-1audv06 > div",
-        "READY_DOWNLOAD": "#BOTTOM_SHEET > div.css-qu3ao > div > div.right.css-oq3qu5",
-        "DOWNLOAD_PICTURE":"#__next > div > div > main > article > div:nth-child(1) > section > div.carousel-root > div > div.css-ln49wb",
-        "SAVE_PICTURE_XPATH": "//*[@id='${index}]/div/span/img",
-        "COUNT_PICTURE": "#__next > div > div > main > article > div:nth-child(1) > section > div.css-3yjbuh > figcaption > figcaption > p.css-0"
+  "ACCO": {
+    "TITLE": "#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt",
+    "RATING": "#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span",
+    "FACILITY": "#__next > div > div > main > article > div:nth-child(1) > div.css-11sbcds > section > ul > div",
+    "SELLER_INFO": {
+      "BUTTON": "#__next > div > div > main > article > div:nth-child(3) > div > div > div.css-1830rfa",
+      "ADDRESS": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(3) > div:nth-child(2) > div",
+      "TEL": "#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(5) > div:nth-child(2) > div"
     },
-    "ROOM":{
-        "PRICE":"#__next > div > div > main > article > section:nth-child(3) > ul > li > div > div.css-1tv79r0 > div > div.css-1d2dkx7 > span",
-        "RULES":"#__next > div > div > main > article > section:nth-child(3) > ul > li:nth-child(1) > div > div.css-1xcx7se > span:nth-child(2)",
-        "INFO":"#__next > div > div > main > article > section:nth-child(2) > article.css-11faxjx > ul > li",
-        "TITLE": "#__next > div > div > main > article > section:nth-child(2) > article.css-zddhdk > div.css-cwsr4f > div.css-x62baa",
-        "DOWNLOAD_PICTURE": "#__next > div > div > main > article > section.css-1wpv5ik > div.carousel-root > div > div.css-ln49wb",
-        "COUNT_PICTURE":"#__next > div > div > main > article > section.css-1wpv5ik > div.css-3yjbuh > figcaption > figcaption > p.css-0",
-        "SAVE_PICTURE_XPATH": "//*[@id='${index}']/div/span/img"
-    }
+    "LOWEST_AND_URL": "#__next > div > div > main > article > div:nth-child(2) > div > div.css-17c0wg8 > div > div.css-1audv06 > div",
+    "READY_DOWNLOAD": "#BOTTOM_SHEET > div.css-qu3ao > div > div.right.css-oq3qu5",
+    "DOWNLOAD_PICTURE": "#__next > div > div > main > article > div:nth-child(1) > section > div.carousel-root > div > div.css-ln49wb",
+    "COUNT_PICTURE": "#__next > div > div > main > article > div:nth-child(1) > section > div.css-3yjbuh > figcaption > figcaption > p.css-0"
+  },
+  "ROOM": {
+    "PRICE": "#__next > div > div > main > article > section:nth-child(3) > ul > li > div > div.css-1tv79r0 > div > div.css-1d2dkx7 > span",
+    "RULES": {
+      "GUEST": "#__next > div > div > main > article > section:nth-child(3) > ul > li:nth-child(1) > div > div.css-1xcx7se > span:nth-child(2)",
+      "CHECK_IN": "#__next > div > div > main > article > section:nth-child(3) > ul > li:nth-child(1) > div > div.css-1xcx7se > span:nth-child(4)",
+      "CHECK_OUT": "#__next > div > div > main > article > section:nth-child(3) > ul > li:nth-child(1) > div > div.css-1xcx7se > span:nth-child(6)"
+    },
+    "INFO": "#__next > div > div > main > article > section:nth-child(2) > article.css-11faxjx > ul > li",
+    "TITLE": "#__next > div > div > main > article > section:nth-child(2) > article.css-zddhdk > div.css-cwsr4f > div.css-x62baa",
+    "DOWNLOAD_PICTURE": "#__next > div > div > main > article > section.css-1wpv5ik > div.carousel-root > div > div.css-ln49wb",
+    "COUNT_PICTURE": "#__next > div > div > main > article > section.css-1wpv5ik > div.css-3yjbuh > figcaption > figcaption > p.css-0"
+  }
 }
-
-

@@ -1,5 +1,5 @@
-String.prototype.toNumber = require("./utils");
-const { accoSelector } = require("./utils");
+String.prototype.toNumber = require("./utils/util");
+const { accoSelector } = require("./utils/util");
 
 const { iconNameList, download, makeFolder, numberOfPictures, readTitle } = require("./CommonMethod");
 
@@ -27,15 +27,11 @@ module.exports = {
     return iconNameList(page, facilitySelector, attr);
   },
   crawlSellerInfo: async (page) => {
-    const btn = await page.waitForSelector(accoSelector.SELLER_INFO);
+    const btn = await page.waitForSelector(accoSelector.SELLER_INFO.BUTTON);
     await btn.evaluate((b) => b.click());
 
-    //element의 부모를 읽어와서 자식을 번호로 사용함
-    let ELEMENT_NUMBER = 3;
-
-    const address = await page.$(accoSelector.DATA);
-    ELEMENT_NUMBER = 5;
-    const tel = await page.$(accoSelector.DATA);
+    const address = await page.$(accoSelector.SELLER_INFO.ADDRESS);
+    const tel = await page.$(accoSelector.SELLER_INFO.TEL);
     const strAddr = await page.evaluate((el) => el.textContent, address);
     const strTel = await page.evaluate((el) => el.textContent, tel);
 
