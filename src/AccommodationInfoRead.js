@@ -1,15 +1,17 @@
 String.prototype.toNumber = require("./utils");
+const { accoSelector } = require("./utils");
+
 const { iconNameList, download, makeFolder, numberOfPictures, readTitle } = require("./CommonMethod");
-const aa = {a:1, b:2}
+
 module.exports = {
   crawlTitle: async (page) => {
-    const titleSelector = "#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-jyf8pg > div.property-title.css-fie5xt";
+    const titleSelector = accoSelector.TITLE;
 
     return await readTitle(page, titleSelector);
   },
   crawlRating: async (page) => {
-    const rating = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-189aa3t");
-    const ratingCount = await page.$("#__next > div > div > main > article > div:nth-child(1) > div.css-arr6gp > div.css-1wbp5wz > span.css-15gzbke");
+    const rating = await page.$(`${accoSelector.RATING}.css-189aa3t`);
+    const ratingCount = await page.$(`${accoSelector.RATING}.css-15gzbke`);
 
     let strRating = "-1";
     let strRatingCount = "-1";
@@ -20,23 +22,27 @@ module.exports = {
     return [strRating.toNumber(), strRatingCount.toNumber()];
   },
   facilityList: async (page) => {
-    const facilitySelector = "#__next > div > div > main > article > div:nth-child(1) > div.css-11sbcds > section > ul > div";
+    const facilitySelector = accoSelector.FACILITY;
     const attr = "img";
     return iconNameList(page, facilitySelector, attr);
   },
   crawlSellerInfo: async (page) => {
-    const result = await page.waitForSelector("#__next > div > div > main > article > div:nth-child(3) > div > div > div.css-1830rfa");
-    await result.evaluate((b) => b.click());
+    const btn = await page.waitForSelector(accoSelector.SELLER_INFO);
+    await btn.evaluate((b) => b.click());
 
-    const address = await page.$("#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(3) > div:nth-child(2) > div");
-    const tel = await page.$("#_MODAL_DIM_ > div > div > div > main > article > div > div:nth-child(5) > div:nth-child(2) > div");
+    //element의 부모를 읽어와서 자식을 번호로 사용함
+    let ELEMENT_NUMBER = 3;
+
+    const address = await page.$(accoSelector.DATA);
+    ELEMENT_NUMBER = 5;
+    const tel = await page.$(accoSelector.DATA);
     const strAddr = await page.evaluate((el) => el.textContent, address);
     const strTel = await page.evaluate((el) => el.textContent, tel);
 
     return [strTel, strAddr];
   },
   crawlLowPrice: async (page) => {
-    const result = await page.$$("#__next > div > div > main > article > div:nth-child(2) > div > div.css-17c0wg8 > div > div.css-1audv06 > div");
+    const result = await page.$$(accoSelector.LOWEST_AND_URL);
     let LowPrice = 0;
 
     for await (const price of result) {
@@ -50,7 +56,7 @@ module.exports = {
     return LowPrice;
   },
   crawlRoomUrl: async (page) => {
-    const result = await page.$$("#__next > div > div > main > article > div:nth-child(2) > div > div.css-17c0wg8 > div > div.css-1audv06 > div");
+    const result = await page.$$(accoSelector.LOWEST_AND_URL);
     let LowPrice = [];
 
     for await (const price of result) {

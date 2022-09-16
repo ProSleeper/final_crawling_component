@@ -1,9 +1,21 @@
+const fs = require("fs");
+
 String.prototype.toNumber = function () {
   return Number(this.match(/\d/gi).join().replaceAll(",", ""));
 };
 
-module.exports = String.prototype.toNumber;
+const selector = JSON.parse(fs.readFileSync('./json/selector.json'));
+const ACCOMODATION_URL = JSON.parse(fs.readFileSync('./json/url.json')).URL;
+const accoSelector = selector.ACCO;
+const roomSelector = selector.ROOM;
 
+//현재 순환참고 문제 발생중.
+module.exports = {
+  ACCOMODATION_URL,
+  accoSelector,
+  roomSelector,
+  toNumber:String.prototype.toNumber
+}
 /**
  * 숙소에서 크롤링할 데이터
  *

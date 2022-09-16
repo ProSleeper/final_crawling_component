@@ -3,36 +3,34 @@ const fetch = require("node-fetch");
 const fs = require("fs");
 const abi = require("./AccommodationInfoRead");
 const rbi = require("./RoomInfoRead");
-String.prototype.toNumber = require("./utils");
+const { ACCOMODATION_URL, accoSelector } = require("./utils");
 const { iconNameList, download, makeFolder, numberOfPictures } = require("./CommonMethod");
 const Accomodation = require("./Accomodation");
+String.prototype.toNumber = require("./utils").toNumber;
+//Rating, RatingCount 두개는 마지막 부분만 달라서 나눠도 됨.
+//RoomRules 맨 뒤에 숫자만 2,4,6 3개로 변환해서 사용하면 됨
+// const selector = JSON.parse(fs.readFileSync('./json/selector.json'));
+// const ACCOMODATION_URL = JSON.parse(fs.readFileSync('./json/url.json')).URL;
+// const accoSelector = selector.ACCO;
+// const roomSelector = selector.ROOM;
 
-const SAVE_DIRECTORY = `${__dirname}\\lowData\\${title}\\data.json`;//현재 임시
+// //현재 순환참고 문제 발생중.
+// module.exports = {
+//   ACCOMODATION_URL,
+//   accoSelector,
+//   roomSelector
+// }
 
-const ACCOMODATION_URL = [
-  "https://place-site.yanolja.com/places/10041549",
-  "https://place-site.yanolja.com/places/3008029",
-  "https://place-site.yanolja.com/places/10041549",
-  "https://place-site.yanolja.com/places/3002358",
-  "https://place-site.yanolja.com/places/3012800",
-  "https://place-site.yanolja.com/places/3016420",
-  "https://place-site.yanolja.com/places/25986",
-  "https://place-site.yanolja.com/places/3006283",
-  "https://place-site.yanolja.com/places/1007912",
-  "https://place-site.yanolja.com/places/1000099554",
-  "https://place-site.yanolja.com/places/3007345",
-  "https://place-site.yanolja.com/places/10040403",
-  "https://place-site.yanolja.com/places/3001028",
-  "https://place-site.yanolja.com/places/3013821",
-  "https://place-site.yanolja.com/places/3004350",
-  "https://place-site.yanolja.com/places/1000103175",
-  "https://place-site.yanolja.com/places/10046272",
-  "https://place-site.yanolja.com/places/10046312",
-];
+// console.log(accoSelector);
+// console.log(roomSelector);
+// console.log(ACCOMODATION_URL);
+
+
+//const SAVE_DIRECTORY = `${__dirname}\\lowData\\${title}\\data.json`;//현재 임시
 
 async function startCrawl(url) {
   try {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
 
@@ -67,7 +65,7 @@ async function startCrawl(url) {
   }
 }
 async function readyDownload(page) {
-  const templa = await page.waitForSelector("#BOTTOM_SHEET > div.css-qu3ao > div > div.right.css-oq3qu5");
+  const templa = await page.waitForSelector(accoSelector.READY_DOWNLOAD);
   // await templa.evaluate((b) => b.click());
   // await templa.evaluate((b) => b.click());
   // await templa.evaluate((b) => b.click());
@@ -83,7 +81,7 @@ async function readyDownload(page) {
 }
 
 async function startDownloadPicture(page, title) {
-  const temp = await page.waitForSelector("#__next > div > div > main > article > div:nth-child(1) > section > div.carousel-root > div > div.css-ln49wb");
+  const temp = await page.waitForSelector(accoSelector.DOWNLOAD_PICTURE);
 
   const pictureCount = await countPicture(page);
   for (let index = 0; index < pictureCount; index++) {
@@ -95,6 +93,7 @@ async function startDownloadPicture(page, title) {
 
 async function savePicture(page, index, title) {
   const [target] = await page.$x("//*[@id='" + index + "']/div/span/img");
+  //const [target] = await page.$x(accoSelector.SAVE_PICTURE_XPATH);
   const src = await target.getProperty("src");
   const image = await src.jsonValue();
 
@@ -104,7 +103,7 @@ async function savePicture(page, index, title) {
 }
 
 async function countPicture(page) {
-  const numberOfPictureSelector = "#__next > div > div > main > article > div:nth-child(1) > section > div.css-3yjbuh > figcaption > figcaption > p.css-0";
+  const numberOfPictureSelector = accoSelector.COUNT_PICTURE;
 
   return numberOfPictures(page, numberOfPictureSelector);
 }
