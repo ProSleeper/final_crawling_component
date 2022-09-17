@@ -1,30 +1,26 @@
 const puppeteer = require("puppeteer");
-const fetch = require("node-fetch");
 const fs = require("fs");
-const bi = require("./AccommodationInfoRead");
-String.prototype.toNumber = require("./utils/util");
 const { iconNameList, download, makeFolder, numberOfPictures, readTitle } = require("./CommonMethod");
 const Room = require("./class/Room");
 const { roomSelector } = require("./utils/util");
+String.prototype.toNumber = require("./utils/util");
 
-module.exports = {
-  roomConnect: async (browser, roomUrl, accoTitle) => {
-    const page = await browser.newPage();
-    await page.setViewport({ width: 1920, height: 1080 });
-    await page.goto(roomUrl);
-    const roomTitle = await crawlRoomTitle(page, accoTitle);
-    console.log("객실명: " + roomTitle);
-    const roomInfo = await crawlRoomInfo(page);
-    const roomRules = await crawlRoomRules(page);
-    const roomPrice = await crawlPrice(page);
+const roomCrawl = async (browser, roomUrl, accoTitle) => {
+  const page = await browser.newPage();
+  await page.setViewport({ width: 1920, height: 1080 });
+  await page.goto(roomUrl);
+  const roomTitle = await crawlRoomTitle(page, accoTitle);
+  console.log("객실명: " + roomTitle);
+  const roomInfo = await crawlRoomInfo(page);
+  const roomRules = await crawlRoomRules(page);
+  const roomPrice = await crawlPrice(page);
 
-    const roomData = new Room(roomTitle, roomInfo, roomRules, roomPrice);
-    await startDownloadPicture(page, accoTitle, roomTitle);
+  const roomData = new Room(roomTitle, roomInfo, roomRules, roomPrice);
+  await startDownloadPicture(page, accoTitle, roomTitle);
 
-    fs.writeFile(`${__dirname}\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\roomData.json`, JSON.stringify(roomData), () => {});
+  fs.writeFile(`${__dirname}\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\roomData.json`, JSON.stringify(roomData), () => {});
 
-    page.close();
-  },
+  page.close();
 };
 
 const crawlPrice = async (page) => {
@@ -42,7 +38,7 @@ const crawlRoomRules = async (page) => {
   const strChkIn = await page.evaluate((el) => el.textContent, checkIn);
   const strChkOut = await page.evaluate((el) => el.textContent, checkOut);
 
-  return [strGuest, strChkIn, strChkOut];
+  return [strGuest.match(/\d/gi), strChkIn, strChkOut];
 };
 
 const crawlRoomInfo = async (page) => {
@@ -57,20 +53,18 @@ const crawlRoomTitle = async (page, accoTitle) => {
   title = await readTitle(page, titleSelector);
   const makeFolderDupl = (dir) => {
     if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
+      fs.mkdirSync(dir, { recursive: true });
     } else {
       const mil = new Date().getMilliseconds();
-      fs.mkdirSync(`${dir}${mil}`);
-      title = `${title}${mil}`;
+      fs.mkdirSync(`${dir + mil}`, { recursive: true });
+      title = `${title + mil}`;
     }
   };
-  makeFolder(__dirname + "\\lowData\\" + accoTitle);
-  makeFolder(__dirname + "\\lowData\\" + accoTitle + "\\rooms\\");
-  makeFolderDupl(__dirname + "\\lowData\\" + accoTitle + "\\rooms\\" + title);
-
+  makeFolder(`${__dirname}\\lowData\\${accoTitle}\\rooms`);
+  makeFolderDupl(`${__dirname}\\lowData\\${accoTitle}\\rooms\\${title}`);
   return title;
 };
-async function startDownloadPicture(page, accoTitle, roomTitle) {
+const startDownloadPicture = async (page, accoTitle, roomTitle) => {
   let picture = null;
   try {
     picture = await page.waitForSelector(roomSelector.DOWNLOAD_PICTURE);
@@ -84,21 +78,20 @@ async function startDownloadPicture(page, accoTitle, roomTitle) {
     }
     await savePicture(page, index, accoTitle, roomTitle);
   }
-}
+};
 async function countPicture(page) {
   const numberOfPictureSelector = roomSelector.COUNT_PICTURE;
 
   return numberOfPictures(page, numberOfPictureSelector);
 }
 
-async function savePicture(page, index, accoTitle, roomTitle) {
+const savePicture = async (page, index, accoTitle, roomTitle) => {
   const [target] = await page.$x(`//*[@id='${index}']/div/span/img`);
   const src = await target.getProperty("src");
   const image = await src.jsonValue();
 
-  makeFolder(__dirname + "\\lowData\\" + accoTitle);
-  makeFolder(__dirname + "\\lowData\\" + accoTitle + "\\rooms\\");
-  makeFolder(__dirname + "\\lowData\\" + accoTitle + "\\rooms\\" + roomTitle);
-  makeFolder(__dirname + "\\lowData\\" + accoTitle + "\\rooms\\" + roomTitle + "\\images");
-  const data = await download(image, `${__dirname}\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\images\\image${index}.jpg`);
-}
+  makeFolder(`${__dirname}\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\images`);
+  await download(image, `${__dirname}\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\images\\image${index}.jpg`);
+};
+
+module.exports = roomCrawl;

@@ -14,7 +14,6 @@ const iconNameList = async (page, selector, attr) => {
 };
 
 const download = async (url, dest) => {
-  //console.log("유알" + url);
   const fetchResponse = await fetch(url);
   const myBlob = await fetchResponse.blob();
   const myArrayBuffer = await myBlob.arrayBuffer();
@@ -24,24 +23,29 @@ const download = async (url, dest) => {
 };
 
 const makeFolder = (dir) => {
+  //폴더없으면 폴더 여러개 생성
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir);
+    fs.mkdirSync(dir, { recursive: true });
   }
 };
 
 const numberOfPictures = async (page, numberOfPictureSelector) => {
   const numberOfPictures = await page.$(numberOfPictureSelector);
   const count = await page.evaluate((el) => el.textContent, numberOfPictures);
-
   return count.toNumber();
 };
 
 const readTitle = async (page, titleSelector) => {
   const result = await page.$(titleSelector);
-
   let title = await page.evaluate((el) => el.textContent, result);
-  title = title.replaceAll(/[\/\:\*\?\"\<\>\|]/gi, "");
-  return title;
+  
+  return title.replaceAll(/[\/\:\*\?\"\<\>\|]/gi, "");
 };
 
-module.exports = { iconNameList, download, makeFolder, numberOfPictures, readTitle };
+module.exports = {
+  iconNameList,
+  download,
+  makeFolder,
+  numberOfPictures,
+  readTitle
+};
