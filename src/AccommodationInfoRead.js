@@ -70,7 +70,7 @@ const startDownloadPicture = async (page, title) => {
   }
 };
 const savePicture = async (page, index, title) => {
-  const [target] = await page.$x("//*[@id='" + index + "']/div/span/img");
+  const [target] = await page.$x(`//*[@id='${index}']/div/span/img`);
   const src = await target.getProperty("src");
   const image = await src.jsonValue();
 
