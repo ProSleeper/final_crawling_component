@@ -1,6 +1,6 @@
 const fs = require("fs");
 const fetch = require("node-fetch");
-String.prototype.toNumber = require("./utils/util");
+String.prototype.toNumber = require("../utils/util");
 
 const iconNameList = async (page, selector, attr) => {
   const elements = await page.$$(selector);
