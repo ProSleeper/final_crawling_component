@@ -1,6 +1,6 @@
-const { accoSelector } = require("./utils/util");
+const { accoSelector } = require("../utils/util");
 const { iconNameList, download, makeFolder, numberOfPictures, readTitle } = require("./CommonMethod");
-String.prototype.toNumber = require("./utils/util");
+String.prototype.toNumber = require("../utils/util");
 
 const crawlTitle = async (page) => {
   const titleSelector = accoSelector.TITLE;
