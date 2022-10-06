@@ -22,7 +22,7 @@ async function runCrawl(url) {
     for await (const roomUrl of arrUrl) {
       await roomCrawl(browser, `https://place-site.yanolja.com${roomUrl}`, title);
       if (count > 10) {
-        break;
+        //break;
       }
       count++;
     }

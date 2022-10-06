@@ -63,7 +63,7 @@ const startDownloadPicture = async (page, title) => {
   const temp = await page.waitForSelector(accoSelector.DOWNLOAD_PICTURE);
 
   let pictureCount = await countPicture(page);
-  pictureCount = pictureCount > 10 ? 10 : pictureCount;
+  // pictureCount = pictureCount > 10 ? 10 : pictureCount;
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
     await temp.evaluate((b) => b.click());

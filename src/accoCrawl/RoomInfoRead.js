@@ -75,7 +75,7 @@ const startDownloadPicture = async (page, accoTitle, roomTitle) => {
   } catch (error) {}
 
   let pictureCount = await countPicture(page);
-  pictureCount = pictureCount > 10 ? 10 : pictureCount;
+  // pictureCount = pictureCount > 10 ? 10 : pictureCount;
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
     if (picture != undefined && picture != null) {
