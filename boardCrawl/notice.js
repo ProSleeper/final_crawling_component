@@ -76,6 +76,7 @@ async function runCrawl() {
     }
 
     writing = writing.replaceAll("\n", "");
+    writing = writing.replaceAll('"', "");
 
     const data = {
       title: title,
