@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\Crawling.js"
+            "program": "${workspaceFolder}\\boardCrawl\\event.js"
         }
     ]
 }
