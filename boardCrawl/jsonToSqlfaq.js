@@ -34,14 +34,17 @@ arrStr.forEach((mkName) => {
     //const jsonItem = JSON.stringify(item);
     // let sqlObject = "INSERT INTO `T_BOARD` (`boardCategoryNum`,`boardTitle`,`boardContent`, `boardCreate`) VALUES ";
 
-    let sqlObject = `(${mkName[1]}, "${testData.title}", "${testData.content}" )`;
+    testData.content = testData.content.replaceAll(/\"/gi, "'");
+    let sqlObject = `(${mkName[1]}, "${testData.title}", "${testData.content}", NOW() ),\n`;
 
     console.log(testData.title);
 
     // testData.title = testData.title.replaceAll(/[\/\:\*\?\"\<\>\|\\]/gi, "");
     testData.title = testData.title.replaceAll(/[\n\t\/\:\*\?\"\<\>\|]/gi, "");
+    
 
-    sqlObject += ",";
+
+
     makeFolder(`${writeFolder}\\${mkName[0]}`);
 
     fs.appendFile(`${writeFolder}\\${mkName[0]}\\inputData.sql`, sqlObject, (err) => {
