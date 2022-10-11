@@ -91,8 +91,6 @@ async function runCrawl() {
     fs.writeFile(`${__dirname}\\notice\\${fileTitle}`, JSON.stringify(data), (err) => {
       if (err) throw err;
     });
-    //console.log(writing);
-    //console.log(content);
 
     //크롤링 코드 부분
     const backButton = await page.$("#__next > div > div > header > div > div > div:nth-child(1) > div");
