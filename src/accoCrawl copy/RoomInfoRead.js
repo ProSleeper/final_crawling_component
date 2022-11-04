@@ -5,21 +5,21 @@ const Room = require("../class/Room");
 const { roomSelector } = require("../utils/util");
 String.prototype.toNumber = require("../utils/util");
 
-const roomCrawl = async (browser, roomUrl, accoTitle, region) => {
+const roomCrawl = async (browser, roomUrl, accoTitle) => {
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080 });
   await page.goto(roomUrl);
-  const roomTitle = await crawlRoomTitle(page, accoTitle, region);
+  const roomTitle = await crawlRoomTitle(page, accoTitle);
   console.log("객실명: " + roomTitle);
   const roomInfo = await crawlRoomInfo(page);
   const roomRules = await crawlRoomRules(page);
   const roomPrice = await crawlPrice(page);
 
   const roomData = new Room(roomTitle, roomInfo, roomRules, roomPrice);
-  await startDownloadPicture(page, accoTitle, roomTitle, region);
-  console.log("룸크롤링 중 리전" + region);
+  await startDownloadPicture(page, accoTitle, roomTitle);
+
   fs.writeFile(
-    `${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${roomTitle}\\roomData.json`,
+    `${__dirname}\\..\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\roomData.json`,
     JSON.stringify(roomData),
     () => {}
   );
@@ -51,7 +51,7 @@ const crawlRoomInfo = async (page) => {
   return iconNameList(page, basicInfoSelector, attr);
 };
 
-const crawlRoomTitle = async (page, accoTitle, region) => {
+const crawlRoomTitle = async (page, accoTitle) => {
   const titleSelector = roomSelector.TITLE;
 
   title = await readTitle(page, titleSelector);
@@ -64,24 +64,24 @@ const crawlRoomTitle = async (page, accoTitle, region) => {
       title = `${title + mil}`;
     }
   };
-  makeFolder(`${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms`);
-  makeFolderDupl(`${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${title}`);
+  makeFolder(`${__dirname}\\..\\lowData\\${accoTitle}\\rooms`);
+  makeFolderDupl(`${__dirname}\\..\\lowData\\${accoTitle}\\rooms\\${title}`);
   return title;
 };
-const startDownloadPicture = async (page, accoTitle, roomTitle, region) => {
+const startDownloadPicture = async (page, accoTitle, roomTitle) => {
   let picture = null;
   try {
     picture = await page.waitForSelector(roomSelector.DOWNLOAD_PICTURE);
   } catch (error) {}
 
   let pictureCount = await countPicture(page);
-  pictureCount = pictureCount > 10 ? 10 : pictureCount;
+  // pictureCount = pictureCount > 10 ? 10 : pictureCount;
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
     if (picture != undefined && picture != null) {
       await picture.evaluate((b) => b.click());
     }
-    await savePicture(page, index, accoTitle, roomTitle, region);
+    await savePicture(page, index, accoTitle, roomTitle);
   }
 };
 async function countPicture(page) {
@@ -90,13 +90,13 @@ async function countPicture(page) {
   return numberOfPictures(page, numberOfPictureSelector);
 }
 
-const savePicture = async (page, index, accoTitle, roomTitle, region) => {
+const savePicture = async (page, index, accoTitle, roomTitle) => {
   const [target] = await page.$x(`//*[@id='${index}']/div/span/img`);
   const src = await target.getProperty("src");
   const image = await src.jsonValue();
 
-  makeFolder(`${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${roomTitle}\\images`);
-  await download(image, `${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${roomTitle}\\images\\image${new Date().getTime() / 1000}.jpg`);
+  makeFolder(`${__dirname}\\..\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\images`);
+  await download(image, `${__dirname}\\..\\lowData\\${accoTitle}\\rooms\\${roomTitle}\\images\\image${index}.jpg`);
 };
 
 module.exports = roomCrawl;

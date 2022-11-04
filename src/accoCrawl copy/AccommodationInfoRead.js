@@ -59,25 +59,24 @@ const crawlRoomUrl = async (page) => {
   }
   return roomUrlList;
 };
-const startDownloadPicture = async (page, title, region) => {
+const startDownloadPicture = async (page, title) => {
   const temp = await page.waitForSelector(accoSelector.DOWNLOAD_PICTURE);
 
-  
   let pictureCount = await countPicture(page);
-  pictureCount = pictureCount > 10 ? 10 : pictureCount;
+  // pictureCount = pictureCount > 10 ? 10 : pictureCount;
   for (let index = 0; index < pictureCount; index++) {
     await page.waitForTimeout(200);
     await temp.evaluate((b) => b.click());
-    await savePicture(page, index, title, region);
+    await savePicture(page, index, title);
   }
 };
-const savePicture = async (page, index, title, region) => {
+const savePicture = async (page, index, title) => {
   const [target] = await page.$x(`//*[@id='${index}']/div/span/img`);
   const src = await target.getProperty("src");
   const image = await src.jsonValue();
 
-  makeFolder(`${__dirname}\\..\\lowData${region}\\${title}\\images`);
-  await download(image, `${__dirname}\\..\\lowData${region}\\${title}\\images\\image${new Date().getTime() / 1000}.jpg`);
+  makeFolder(`${__dirname}\\..\\lowData\\${title}\\images`);
+  await download(image, `${__dirname}\\..\\lowData\\${title}\\images\\image${index}.jpg`);
 };
 const countPicture = async (page) => {
   const numberOfPictureSelector = accoSelector.COUNT_PICTURE;

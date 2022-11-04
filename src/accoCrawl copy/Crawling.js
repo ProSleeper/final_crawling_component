@@ -6,9 +6,9 @@ const { ACCOMODATION_URL } = require("../utils/util");
 const Accomodation = require("../class/Accomodation");
 String.prototype.toNumber = require("../utils/util").toNumber;
 
-async function runCrawl(url, region = "") {
+async function runCrawl(url) {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
 
@@ -20,7 +20,7 @@ async function runCrawl(url, region = "") {
     console.log("룸 크롤링 시작");
     let count = 0;
     for await (const roomUrl of arrUrl) {
-      await roomCrawl(browser, `https://place-site.yanolja.com${roomUrl}`, title, region);
+      await roomCrawl(browser, `https://place-site.yanolja.com${roomUrl}`, title);
       if (count > 10) {
         //break;
       }
@@ -28,7 +28,7 @@ async function runCrawl(url, region = "") {
     }
     console.log("룸 크롤링 끝");
     console.log("숙소 크롤링 시작");
-    await abi.startDownloadPicture(page, title, region);
+    await abi.startDownloadPicture(page, title);
     const rating = await abi.crawlRating(page);
     const fac = await abi.facilityList(page);
     const lowPrice = await abi.crawlLowPrice(page);
@@ -36,10 +36,7 @@ async function runCrawl(url, region = "") {
     console.log("숙소 크롤링 끝");
     console.log("파일 저장");
     const accoData = new Accomodation(title, rating, fac, lowPrice, basicInfo, url);
-    //region 값이 있다면 해당 위치로 들어가게.
-    //오는 region의 형식 값은 문자열로 "\\도시\\분류"
-    console.log(region);
-    fs.writeFile(`${__dirname}\\..\\lowData${region}\\${title}\\data.json`, JSON.stringify(accoData), (err) => {
+    fs.writeFile(`${__dirname}\\..\\lowData\\${title}\\data.json`, JSON.stringify(accoData), (err) => {
       if (err) throw err;
     });
     console.log("파일 저장 끝");
@@ -59,9 +56,4 @@ async function initCrawling() {
   }
 }
 
-// initCrawling();
-
-
-module.exports = {
-  runCrawl
-};
+initCrawling();

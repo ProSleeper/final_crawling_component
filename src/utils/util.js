@@ -7,11 +7,13 @@ String.prototype.toNumber = function () {
 
 const selector = JSON.parse(fs.readFileSync(path.join(__dirname, "./../json/selector.json")));
 const ACCOMODATION_URL = JSON.parse(fs.readFileSync(path.join(__dirname, "./../json/url.json"))).URL;
+const CATEGORY_URL = JSON.parse(fs.readFileSync(path.join(__dirname, "./../json/categoryUrl.json"))).URL;
 const accoSelector = selector.ACCO;
 const roomSelector = selector.ROOM;
 
 module.exports = {
   ACCOMODATION_URL,
+  CATEGORY_URL,
   accoSelector,
   roomSelector,
   toNumber: String.prototype.toNumber,
