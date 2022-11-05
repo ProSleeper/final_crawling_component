@@ -96,7 +96,12 @@ const savePicture = async (page, index, accoTitle, roomTitle, region) => {
   const image = await src.jsonValue();
 
   makeFolder(`${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${roomTitle}\\images`);
-  await download(image, `${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${roomTitle}\\images\\image${new Date().getTime() / 1000}.jpg`);
+  await download(
+    image,
+    `${__dirname}\\..\\lowData${region}\\${accoTitle}\\rooms\\${roomTitle}\\images\\image${
+      (new Date().getTime() / 1000) * 1000
+    }.jpg`
+  );
 };
 
 module.exports = roomCrawl;

@@ -62,7 +62,7 @@ const crawlRoomUrl = async (page) => {
 const startDownloadPicture = async (page, title, region) => {
   const temp = await page.waitForSelector(accoSelector.DOWNLOAD_PICTURE);
 
-  
+
   let pictureCount = await countPicture(page);
   pictureCount = pictureCount > 10 ? 10 : pictureCount;
   for (let index = 0; index < pictureCount; index++) {
@@ -77,7 +77,10 @@ const savePicture = async (page, index, title, region) => {
   const image = await src.jsonValue();
 
   makeFolder(`${__dirname}\\..\\lowData${region}\\${title}\\images`);
-  await download(image, `${__dirname}\\..\\lowData${region}\\${title}\\images\\image${new Date().getTime() / 1000}.jpg`);
+  await download(
+    image,
+    `${__dirname}\\..\\lowData${region}\\${title}\\images\\image${(new Date().getTime() / 1000) * 1000}.jpg`
+  );
 };
 const countPicture = async (page) => {
   const numberOfPictureSelector = accoSelector.COUNT_PICTURE;
