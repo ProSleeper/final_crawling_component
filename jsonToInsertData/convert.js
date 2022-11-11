@@ -4,6 +4,7 @@ const fs = require("fs");
 
 const filePath = "C:\\Users\\ingn\\Documents\\crawling\\final_crawling_component\\src\\saveData\\";
 
+
 const category = ["motel", "hotel", "pension", "guestHouse"];
 
 const regionValue = [
@@ -72,14 +73,12 @@ const convertToAccom = (data, path) => {
   const regionNum = regionValue.indexOf(infoArray[9]) + 1;
 
   console.log();
-  strData = `(${++accomNum},"${infoArray[9]}","${infoArray[9]}","${infoArray[9]}","${data.title}",${data.rating / 10},${
-    data.tel
-  },${0},NULL,NULL,NULL,NULL,${data.lowPrice},${60},${1},${categoryNum},${regionNum}),
+  strData = `(${++accomNum},"${infoArray[9]}","${infoArray[9]}","${infoArray[9]}","${data.title}",${data.rating / 10},${data.tel},${0},NULL,NULL,NULL,NULL,${data.lowPrice},${60},${1},${categoryNum},${regionNum}),
   `;
   saveAccomInfo(strData);
   convertToAccomImage(data, path, accomNum);
   // parseRoomDataJson();
-  parseRoomPath(data, infoArray);
+  // parseRoomPath(data, infoArray);
 };
 
 
